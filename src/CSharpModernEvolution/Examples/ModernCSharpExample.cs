@@ -56,11 +56,12 @@ public static class ModernCSharpExample
         Demo.Line("marco.Deactivate().IsActive", marco.Deactivate().IsActive);
         Demo.Line("marco.IsActive (originale)", marco.IsActive);
 
-        Demo.SubTitle("Record come DTO di risultato: Equality e 'with' utili nei test");
+        Demo.SubTitle("Record come DTO di risultato: equality e 'with' utili nei test");
         var evaluation = new Evaluation("Marco Rossi", GetExperienceLevelFor(marco), EvaluateSalaryFor(marco.Salary));
         Demo.Line("evaluation", evaluation.Summary);
-        Demo.Line("IsPositive", evaluation.IsPositive);
-        Demo.Line("evaluation.WithLevel(\"Expert\")", evaluation.WithLevel("Expert").Summary);
+        Demo.Line("IsSenior", evaluation.IsSenior);
+        Demo.Line("WithExperienceLevel(\"Junior\")", evaluation.WithExperienceLevel("Junior").Summary);
+        Demo.Line("l'originale e rimasto invariato", evaluation.Summary);
     }
 
     // -----------------------------------------------------------------
@@ -81,17 +82,19 @@ public static class ModernCSharpExample
         Demo.Line("Category di default", product.Category);
         Demo.Line("sconto 20%", product.PriceAfterDiscount(20m).ToString("C", CultureInfo.CurrentCulture));
 
-        Demo.Note("Con `set` la proprieta resterebbe scrivibile per tutta la vita dell'oggetto;");
-        Demo.Note("con `init` e scrivibile solo durante l'inizializzazione: l'oggetto e 'freeze'.");
-        Demo.Note("`required` invece e una promessa fatta al compilatore: il chiamante DEVE");
-        Demo.Note("inizializzare la proprieta, altrimenti non compila.");
+        Demo.Note(
+            "Con `set` la proprieta resterebbe scrivibile per tutta la vita dell'oggetto;\n" +
+            "con `init` e scrivibile solo durante l'inizializzazione: l'oggetto e 'freeze'.\n" +
+            "`required` e una promessa fatta al compilatore: il chiamante DEVE inizializzare\n" +
+            "la proprieta, altrimenti il codice non compila.");
 
-        Demo.SubTitle("Senza `required` la classe accetterebbe un Name vuoto");
+        Demo.SubTitle("required impedisce l'omissione, non un valore vuoto");
         Demo.Line("new Product { Name = \"\" }", new Product { Name = string.Empty }.ToString());
+        Demo.Line("new Product { } (senza Name)", "errore di compilazione CS9035");
 
-        Demo.SubTitle("init con costruttore e with non applicabile (record vs class)");
-        Demo.Line("Employee con with", "consentito");
-        Demo.Line("Product con with", "non consentito: non e un record");
+        Demo.SubTitle("record vs class: dove finisce 'with'");
+        Demo.Line("Employee con with", "consentito: Employee e un record");
+        Demo.Line("Product con with", "non consentito: Product e una class");
     }
 
     // -----------------------------------------------------------------
@@ -103,6 +106,7 @@ public static class ModernCSharpExample
 
         var service = new SalaryService(25_000m, 55_000m);
 
+        Demo.SubTitle("Il vincolo puo essere posizionale (sintassi C# 12)");
         Demo.Line("MinimumSalary", service.MinimumSalary.ToString("C", CultureInfo.CurrentCulture));
         Demo.Line("MaximumSalary", service.MaximumSalary.ToString("C", CultureInfo.CurrentCulture));
         Demo.Line("IsAboveMinimum(30.000)", service.IsAboveMinimum(30_000m));
@@ -110,11 +114,9 @@ public static class ModernCSharpExample
         Demo.Line("IsWithinRange(60.000)", service.IsWithinRange(60_000m));
         Demo.Line("ApplyBonus(30.000, 10%)", service.ApplyBonus(30_000m, 10m).ToString("C", CultureInfo.CurrentCulture));
 
-        Demo.SubTitle("Usato anche come tipo inline in un parametro");
-        Demo.Line("DepartmentSummary", new DepartmentSummary("IT", 3, 50_333m));
-
-        Demo.Note("La sintassi `new SalaryService(25_000m, 55_000m)` produce lo stesso risultato");
-        Demo.Note("del costruttore classico dichiarato a mano: meno codice, stessa semantica.");
+        Demo.Note(
+            "La sintassi `new SalaryService(25_000m, 55_000m)` produce lo stesso risultato\n" +
+            "del costruttore classico dichiarato a mano: meno codice, stessa semantica.");
     }
 
     // -----------------------------------------------------------------
@@ -159,7 +161,9 @@ public static class ModernCSharpExample
         List<int> activeIds = [.. SampleData.Employees.Where(e => e.IsActive).Select(e => e.Id)];
         Demo.Line("id dei dipendenti attivi", $"[{string.Join(", ", activeIds)}]");
 
-        Demo.Note("Prima di C# 12 serviva `new List<string> { ... }` oppure `new[] { ... }.ToList()`.");
+        Demo.Note(
+            "Prima di C# 12 serviva `new List<string> { ... }`\n" +
+            "oppure `new[] { ... }.ToList()` per ottenere lo stesso risultato.");
     }
 
     // -----------------------------------------------------------------
@@ -194,8 +198,10 @@ public static class ModernCSharpExample
 
         Demo.Line("template interpolato", template.Replace("\r\n", " | ").Replace("\n", " | "));
 
-        Demo.Note("Con le stringhe verbatim (\"\": anteprima) serviva un \\r\\n esplicito per ogni riga.");
-        Demo.Note("Con le raw string literals il testo si scrive cosi com'e: l'indentazione comune viene rimossa.");
+        Demo.Note(
+            "Con le stringhe verbatim (\"\": anteprima) serviva un \\r\\n esplicito per ogni riga.\n" +
+            "Con le raw string literals il testo si scrive cosi com'e: l'indentazione comune\n" +
+            "del blocco viene rimossa automaticamente in fase di compilazione.");
 
         Demo.SubTitle("Serializzazione con System.Text.Json");
         var json = JsonSerializer.Serialize(
@@ -217,11 +223,11 @@ public static class ModernCSharpExample
 
         string? department = null;
 
-        Demo.Line("department?.ToUpper() ?? \"NON DEFINITO\"", department?.ToUpper() ?? "NON DEFINITO");
+        Demo.Line("department = null", department?.ToUpper() ?? "NON DEFINITO");
 
         department = "Human Resources";
 
-        Demo.Line("department?.ToUpper() ?? \"NON DEFINITO\"", department?.ToUpper() ?? "NON DEFINITO");
+        Demo.Line("department = \"Human Resources\"", department?.ToUpper() ?? "NON DEFINITO");
 
         Demo.Line("department?.Length", department?.Length);
         Demo.Line("department!.Length", department!.Length);
@@ -237,9 +243,11 @@ public static class ModernCSharpExample
         notes ??= "valore di default applicato solo se necessario";
         Demo.Line("notes ??=", notes);
 
-        Demo.Note("Una variabile non-nullable come `string` non puo ricevere null: il compilatore");
-        Demo.Note("avvisa con CS8600/CS8602 e il difetto viene trovato prima di eseguire il codice.");
-        Demo.Note("Gli operatori usati: `?` sul tipo, `?.` per l'accesso, `??` per il fallback, `!` per l'asserzione.");
+        Demo.Note(
+            "Una variabile non-nullable come `string` non puo ricevere null: il compilatore\n" +
+            "avvisa con CS8600/CS8602 e il difetto viene trovato prima di eseguire il codice.\n" +
+            "Gli operatori usati: `?` sul tipo, `?.` per l'accesso in catena, `??` per il\n" +
+            "fallback, `??=` per l'assegnazione condizionale, `!` per l'asserzione esplicita.");
     }
 
     // -----------------------------------------------------------------

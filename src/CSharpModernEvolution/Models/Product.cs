@@ -29,5 +29,5 @@ public class Product
         Price * (1m - (discountPercentage / 100m));
 
     public override string ToString() =>
-        $"{Name} | {Category} | {Price:C} | {(InStock ? "disponibile" : "esaurito")}";
+        $"{(Name.Length == 0 ? "(senza nome)" : Name)} | {Category} | {Price:C} | {(InStock ? "disponibile" : "esaurito")}";
 }

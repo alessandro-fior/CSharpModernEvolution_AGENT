@@ -498,4 +498,154 @@ Spiegare brevemente che le collection expressions appartengono alle funzionalit�
 Aggiungere un esempio molto semplice:
 
 ```csharp
-string json =
+string json = """
+    {
+      "id": 1,
+      "department": "IT"
+    }
+    """;
+```
+
+Spiegare che le raw string literals sono state introdotte con C# 11 e che permettono di
+scrivere testi su piu righe senza `\r\n` espliciti e senza escape delle virgolette.
+L'indentazione comune del blocco viene rimossa automaticamente.
+
+Mostrare anche le raw string literals interpolate:
+
+```csharp
+var name = "Marco Rossi";
+var salary = 52_000m;
+
+string template = $$"""
+    Dipendente: {{name}}
+    RAL: {{salary:C}}
+    """;
+```
+
+Spiegare che con `$$` le interpolazioni sono delimitate da `{{ }}`, quindi le graffe singole
+restano letterali.
+
+---
+
+# 18. Modern Collection APIs
+
+Mostrare le API introdotte con .NET 6 e successivi che sostituiscono codice boilerplate:
+
+```csharp
+var perTre = employees.Chunk(3);
+var perReparto = employees.CountBy(e => e.IsActive);
+var topPaga = employees.MaxBy(e => e.Salary);
+var reparti = employees.DistinctBy(e => e.Department);
+var perRepartoIndice = employees.ToLookup(e => e.Department);
+```
+
+Spiegare che non sono sintassi nuova ma APIs della libreria, e che riducono la quantita di
+codice necessario per aggregare, raggruppare e trovare estremi.
+
+Mostrare anche `Order` e `OrderDescending` con un `IComparer<T>`, che eseguono un ordinamento
+stabile.
+
+---
+
+# 19. Struttura finale e test
+
+Il progetto deve essere pubblicabile con:
+
+```text
+CSharpModernEvolution/
+├── CSharpModernEvolution.sln
+├── src/CSharpModernEvolution/
+│   ├── CSharpModernEvolution.csproj
+│   ├── Program.cs
+│   ├── Data/SampleData.cs
+│   ├── Models/
+│   │   ├── Employee.cs
+│   │   ├── Product.cs
+│   │   └── Evaluation.cs
+│   ├── Services/
+│   │   ├── Repository.cs
+│   │   ├── SalaryService.cs
+│   │   └── EmployeeService.cs
+│   └── Examples/
+│       ├── Demo.cs
+│       ├── GenericsExample.cs
+│       ├── LinqExample.cs
+│       ├── AsyncExample.cs
+│       ├── PatternMatchingExample.cs
+│       └── ModernCSharpExample.cs
+├── tests/CSharpModernEvolution.Tests/
+│   ├── CSharpModernEvolution.Tests.csproj
+│   ├── TestData.cs
+│   ├── EmployeeServiceTests.cs
+│   ├── EmployeeTests.cs
+│   ├── PatternMatchingExampleTests.cs
+│   └── DomainServicesTests.cs
+├── README.md
+├── .gitignore
+└── LICENSE
+```
+
+Il progetto di test deve usare xUnit e deve verificare almeno:
+
+- il comportamento asincrono di `EmployeeService`
+- l'uguaglianza per valore e l'espressione `with` dei record
+- i valori di confine delle switch expression (25.000, 35.000, 50.000, 60, 70, 90, 100)
+- la propagazione di `CancellationToken`
+
+Il progetto deve compilare senza warning e senza errori.
+
+Verifica finale:
+
+```bash
+dotnet build
+dotnet test
+dotnet run --project src/CSharpModernEvolution
+```
+
+---
+
+# 20. README
+
+Il README deve contenere:
+
+- obiettivo del laboratorio
+- istruzioni per eseguire il progetto e i test
+- struttura delle cartelle
+- tabella che associa ogni funzionalita alla versione di C# che l'ha introdotta
+- una sezione per ciascuna funzionalita richiesta, con un esempio di codice e la spiegazione
+- la differenza tra `switch` statement e `switch` expression
+- la differenza tra `set` e `init`
+- la differenza tra `record` e `class`
+- licenza
+
+Il README deve essere scritto in italiano e deve essere leggibile da chi non conosce il progetto.
+
+---
+
+# 21. Pubblicazione su GitHub
+
+Repository suggerito:
+
+```text
+https://github.com/alessandro-fior/csharp-modern-evolution
+```
+
+Procedura:
+
+```bash
+git init
+git add .
+git commit -m "C# Modern Evolution Lab"
+git branch -M main
+git remote add origin <url-del-repository>
+git push -u origin main
+```
+
+Verificare prima del push che:
+
+- `.gitignore` esclude `bin/` e `obj/`
+- non sono presenti segreti o credenziali
+- `LICENSE` e presente
+- `dotnet build` e `dotnet test` passano
+
+Non eseguire il push se i test falliscono.

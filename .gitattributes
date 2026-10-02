@@ -1,0 +1,16 @@
+# Normalizzazione delle fine riga: LF nel repository, CRLF nella working copy Windows.
+* text=auto
+
+*.cs      text diff=csharp
+*.csproj  text
+*.sln     text
+*.md      text
+*.json    text
+*.yml     text
+
+# File binari
+*.dll     binary
+*.exe     binary
+*.pdb     binary
+*.png     binary
+*.jpg     binary

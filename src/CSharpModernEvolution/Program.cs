@@ -14,9 +14,9 @@ Console.WriteLine($"Runtime: {Environment.Version}   Framework: {System.Runtime.
 
 GenericsExample.Run();
 LinqExample.Run();
+await AsyncExample.RunAsync();
 PatternMatchingExample.Run();
 ModernCSharpExample.Run();
-await AsyncExample.RunAsync();
 
 watch.Stop();
 

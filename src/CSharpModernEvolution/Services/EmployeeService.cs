@@ -107,8 +107,7 @@ public sealed class EmployeeService
             .. employees.Select(e => new Evaluation(
                 e.FullName,
                 Examples.PatternMatchingExample.GetExperienceLevel(e),
-                Examples.PatternMatchingExample.EvaluateSalary(e.Salary)))
-        ];
+                Examples.PatternMatchingExample.EvaluateSalary(e.Salary)))        ];
     }
 
     /// <summary>

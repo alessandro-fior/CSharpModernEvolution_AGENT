@@ -1,0 +1,43 @@
+## .NET
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+*.suo
+*.userprefs
+*.userosscache
+*.sln.docstates
+project.lock.json
+project.fragment.lock.json
+*.db
+*.dbmdl
+*.jfm
+.vs/
+.vscode/
+.idea/
+*.DotSettings.user
+
+## Test results
+[Tt]est[Rr]esult*/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+*.trx
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!packages/build/
+
+## OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini

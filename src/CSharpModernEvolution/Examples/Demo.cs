@@ -7,6 +7,7 @@ namespace CSharpModernEvolution.Examples;
 internal static class Demo
 {
     private const int Width = 78;
+    private const int LabelWidth = 38;
 
     public static void Section(string title)
     {
@@ -16,36 +17,31 @@ internal static class Demo
         Console.WriteLine(new string('=', Width));
     }
 
-    public static void SubTitle(string title)
-    {
-        Console.WriteLine();
-        WriteLine(ConsoleColor.DarkCyan, $"-- {title}");
-    }
+    public static void SubTitle(string title) => WriteBlock(ConsoleColor.DarkCyan, $"-- {title}");
 
-    public static void Note(string text)
-    {
-        Console.WriteLine();
-        WriteLine(ConsoleColor.DarkGray, text);
-    }
+    public static void Note(string text) => WriteBlock(ConsoleColor.DarkGray, text);
 
     public static void Line(string label, object? value)
     {
         Console.Write("  ");
-        WriteInline(ConsoleColor.Gray, $"{label,-34}");
+        WriteInline(ConsoleColor.Gray, label.PadRight(LabelWidth));
         WriteInline(ConsoleColor.White, $"{value}");
         Console.WriteLine();
     }
 
-    public static void Item(string text) =>
-        WriteLine(ConsoleColor.Gray, $"   * {text}");
+    public static void Item(string text) => WriteInline(ConsoleColor.Gray, $"   * {text}");
 
-    public static void Success(string text) =>
-        WriteLine(ConsoleColor.Green, $"   -> {text}");
+    public static void Success(string text) => WriteInline(ConsoleColor.Green, $"   -> {text}");
 
-    private static void WriteLine(ConsoleColor color, string text)
+    private static void WriteBlock(ConsoleColor color, string text)
     {
-        WriteInline(color, text);
         Console.WriteLine();
+
+        foreach (var line in text.Split('\n'))
+        {
+            WriteInline(color, line);
+            Console.WriteLine();
+        }
     }
 
     private static void WriteInline(ConsoleColor color, string text)
